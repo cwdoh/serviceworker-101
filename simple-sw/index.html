@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+
+  <head>
+    <meta charset="utf-8">
+    <title>ServiceWorker 101 for GDG Meetup</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#2196F3">
+    <link rel="manifest" href="manifest.json">
+  </head>
+
+  <body>
+    <div id=container>
+      <h1>남자 연예인</h1> <!-- 만 있는 것은 아닙니다. :-) -->
+      <img src="/profile/anonymous.jpg">
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+      // SW is available
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        // SW is registered
+        console.log('registered', registration);
+
+        // then start subscribing push.
+        registration.pushManager.subscribe({
+          userVisibleOnly: true
+        }).then(function(subscription) {
+          console.log('subscribed');
+
+          // 원래대로라면 서버가 이 단말에 대해 푸시 메세지를 보낼 수 있도록 
+          // 이 endpoint로 전달된 값을 서비스를 하는 서버에 전달해야 합니다.
+          // https://github.com/gauntface/simple-push-demo 를 참조하세요.
+          console.log(subscription.endpoint.substr(subscription.endpoint.lastIndexOf('/') + 1));
+
+        }).catch(function(error) {
+          console.log('subscription error', error);
+        });
+      }).catch(function(error) {
+        console.log('error', error);
+      });
+    }
+  </script>
+
+</html>
